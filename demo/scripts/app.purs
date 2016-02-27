@@ -10,8 +10,10 @@ import Control.Monad.Eff.Exception (EXCEPTION)
 import API.PouchDB                 (PouchDBM
                                     , PouchDBDocument(PouchDBDocument)
                                     , post
+                                    , put
                                     , info
                                     , pouchDB
+                                    , destroy
                                     , logRaw)
 
 showDBCreateInfo :: forall a e. a -> Eff(console :: CONSOLE | e) Unit
