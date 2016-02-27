@@ -8,11 +8,11 @@ With PouchDB one can store app-data locally *while offline* and sync them with t
 
 ### Implementation Status
 
-- <a href="http://pouchdb.com/api.html#create_database">Create a database</a>
-- <a href="http://pouchdb.com/api.html#database_information">Get database information</a>
-- <a href="http://pouchdb.com/api.html#delete_database">Delete a database</a>
-- <a href="http://pouchdb.com/api.html#create_document">Using put</a>
-- <a href="http://pouchdb.com/api.html#create_document">Using post</a>
+- <a href="http://pouchdb.com/api.html#create_database">Create database</a>
+- <a href="http://pouchdb.com/api.html#database_information">Get db-information</a>
+- <a href="http://pouchdb.com/api.html#delete_database">Delete database</a>
+- <a href="http://pouchdb.com/api.html#create_document">Put document</a>
+- <a href="http://pouchdb.com/api.html#create_document">Post document</a>
 - <a href="http://pouchdb.com/api.html#fetch_document">Fetch document</a>
 
 <img src="http://fs5.directupload.net/images/160227/oeguuxoz.png"/>
