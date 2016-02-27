@@ -3,5 +3,6 @@
 /.pulp-cache/
 /output/
 /dist/
+/test/
 /.psci*
 /src/.webpack.js
