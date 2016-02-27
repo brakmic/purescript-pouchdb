@@ -89,6 +89,25 @@ var _destroy = function(options){
   };
 };
 
+var _put = function(doc){
+  return function(docId){
+    return function(docRev){
+      return function(options){
+        return function(callback){
+          var cb = createCallback('put', callback);
+          return function(db){
+            return function(){
+              var _options = extractOptions(options);
+              cb(db.put(doc.value0,docId.value0,docRev.value0,_options))();
+              return {};
+            };
+          };
+        };
+      };
+    };
+  };
+};
+
 /* HELPERS */
 
 var logRaw = function(str) {
@@ -102,5 +121,6 @@ module.exports = {
   logRaw  : logRaw,
   pouchDB : _pouchDB,
   info    : _info,
-  destroy : _destroy
+  destroy : _destroy,
+  put     : _put
 };
