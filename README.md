@@ -13,7 +13,7 @@ With PouchDB one can store app-data locally *while offline* and sync them with t
 - <a href="http://pouchdb.com/api.html#delete_database">Delete a database</a>
 - <a href="http://pouchdb.com/api.html#create_document">Using put</a>
 
-<img src="http://fs5.directupload.net/images/160227/6j6aob24.png"/>
+<img src="http://fs5.directupload.net/images/160227/97d96j7p.png"/>
 
 ### Building
 
