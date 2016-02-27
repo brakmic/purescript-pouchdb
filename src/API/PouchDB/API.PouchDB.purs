@@ -14,15 +14,16 @@ module API.PouchDB
             pouchDB,
             info,
             destroy,
-            put
+            put,
+            post
           ) where
 
-import Prelude
-import Data.Maybe
-import Data.List
+import Prelude                       (Unit)
+import Data.Maybe                    (Maybe)
+import Data.List                     (List)
 import Control.Monad.Eff             (Eff)
 import Control.Monad.Eff.Console     (CONSOLE())
-import Control.Monad.Eff.Exception
+import Control.Monad.Eff.Exception   (EXCEPTION)
 
 -- | PouchDB Effects & Types
 foreign import data PouchDBM :: !
@@ -79,4 +80,4 @@ foreign import pouchDB :: forall a e. Maybe String -> Maybe (PouchDBOptions a) -
 foreign import info    :: forall a e f. Maybe (a -> Eff e Unit) -> PouchDB -> Eff (err :: EXCEPTION | f) Unit
 foreign import destroy :: forall a b c d. Maybe (PouchDBOptions a) -> Maybe (b -> Eff c Unit) -> PouchDB -> Eff (err :: EXCEPTION | d) Unit
 foreign import put     :: forall a b c d e. PouchDBDocument a -> Maybe String -> Maybe String -> Maybe (PouchDBOptions b) -> Maybe (c -> Eff d Unit) -> PouchDB -> Eff (err :: EXCEPTION | e) Unit
-
+foreign import post    :: forall a b c d e. PouchDBDocument a -> Maybe (PouchDBOptions b) -> Maybe (c -> Eff d Unit) -> PouchDB -> Eff (err :: EXCEPTION | e) Unit

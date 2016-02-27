@@ -93,15 +93,30 @@ var _put = function(doc){
   return function(docId){
     return function(docRev){
       return function(options){
+        var _options = extractOptions(options);
         return function(callback){
           var cb = createCallback('put', callback);
           return function(db){
             return function(){
-              var _options = extractOptions(options);
               cb(db.put(doc.value0,docId.value0,docRev.value0,_options))();
               return {};
             };
           };
+        };
+      };
+    };
+  };
+};
+
+var _post = function(doc){
+  return function(options){
+    var _options = extractOptions(options);
+    return function(callback){
+      var cb = createCallback('post', callback);
+      return function(db){
+        return function(){
+          cb(db.post(doc.value0,_options))();
+          return {};
         };
       };
     };
@@ -122,5 +137,6 @@ module.exports = {
   pouchDB : _pouchDB,
   info    : _info,
   destroy : _destroy,
-  put     : _put
+  put     : _put,
+  post    : _post
 };
