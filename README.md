@@ -53,3 +53,7 @@ npm start
 Open your browser's console to see the output from PouchDB
 
 <img src="http://fs5.directupload.net/images/160227/xe6t8wmp.png"/>
+
+### License
+
+<a href="https://github.com/brakmic/purescript-pouchdb/blob/master/LICENSE">MIT</a>
