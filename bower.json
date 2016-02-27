@@ -1,0 +1,21 @@
+{
+  "name": "purescript-pouchdb",
+  "version": "1.0.0",
+  "moduleType": [
+    "node"
+  ],
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "output"
+  ],
+  "dependencies": {
+    "purescript-console": "^0.1.0",
+    "purescript-maybe": "^0.3.5",
+    "purescript-lists": "^0.7.9",
+    "purescript-foreign": "^0.7.2",
+    "purescript-easy-ffi": "^1.0.2",
+    "purescript-quickcheck": "^0.12.2"
+  }
+}
