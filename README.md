@@ -1,6 +1,6 @@
 ### purescript-pouchdb
 
-<a href="http://pouchdb.com/">PouchDB</a> Bindigs for <a href="http://purescript.org">PureScript</a> (Work in Progress)
+<a href="http://pouchdb.com/">PouchDB</a> Bindings for <a href="http://purescript.org">PureScript</a> (Work in Progress)
 
 PouchDB is an open-source Database inspired by <a href="http://couchdb.apache.org/">Apache CouchDB</a> that runs in the browser.
 
