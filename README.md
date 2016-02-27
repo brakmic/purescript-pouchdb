@@ -8,10 +8,11 @@ With PouchDB one can store app-data locally *while offline* and sync them with t
 
 ### Implementation Status
 
-- <a href="http://pouchdb.com/api.html#create_database">Create database</a>
-- <a href="http://pouchdb.com/api.html#database_information">Database info</a>
+- <a href="http://pouchdb.com/api.html#create_database">Create a database</a>
+- <a href="http://pouchdb.com/api.html#database_information">Get database information</a>
+- <a href="http://pouchdb.com/api.html#delete_database">Delete a database</a>
 
-<img src="http://fs5.directupload.net/images/160227/779725ht.png"/>
+<img src="http://fs5.directupload.net/images/160227/6j6aob24.png"/>
 
 ### Building
 
@@ -49,4 +50,4 @@ npm start
 
 Open your browser's console to see the output from PouchDB
 
-<img src="http://fs5.directupload.net/images/160227/3zyqpajh.png"/>
+<img src="http://fs5.directupload.net/images/160227/82a5lra3.png"/>

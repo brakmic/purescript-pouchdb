@@ -6,15 +6,18 @@ const _PouchDB = require('pouchdb');
 //This is a helper for creating internal callbacks to process responses.
 var createCallback = function(api, callback){
   var cb = null;
+  if(callback.value0){
+    callback = callback.value0;
+  }
   if(callback &&
        callback.constructor &&
        callback.constructor.name == 'Nothing'){
         cb = function(ignore){
-          var ignr = ignore.then(function(){
-            return {};
-          }).catch(function(error){
-            console.log(api + ' failed, error: ' + error);
-          });
+              var ignr = ignore.then(function(){
+                  return {};
+               }).catch(function(error){
+                  console.log(api + ' failed, error: ' + error);
+            });
           var ret = function(){
             return ignr;
           };
@@ -67,9 +70,22 @@ var _info = function(callback){
   var cb = createCallback('info', callback);
   return function(db){
     return function(){
-      cb(db)();
+      cb(db.info())();
       return {};
     }
+  };
+};
+
+var _destroy = function(options){
+  var _options = extractOptions(options);
+  return function(callback){
+  var cb = createCallback('destroy', callback);
+    return function(db){
+      return function(){
+        cb(db.destroy(options))();
+        return {};
+      };
+    };
   };
 };
 
@@ -85,5 +101,6 @@ var logRaw = function(str) {
 module.exports = {
   logRaw  : logRaw,
   pouchDB : _pouchDB,
-  info    : _info
+  info    : _info,
+  destroy : _destroy
 };

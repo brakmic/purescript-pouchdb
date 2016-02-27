@@ -3,14 +3,16 @@ module API.PouchDB
             PouchDBM,
             PouchDB,
             PouchDBEff,
-            Adapter(),
-            StorageType(),
-            AndroidDBImplementation(),
-            PouchDBOptions(),
-            PouchDBInfo(),
+            Adapter(..),
+            StorageType(..),
+            AndroidDBImplementation(..),
+            PouchDBOptions(..),
+            PouchDBInfo(..),
+            PouchDBResponse(..),
             logRaw,
             pouchDB,
-            info
+            info,
+            destroy
           ) where
 
 import Prelude
@@ -29,47 +31,34 @@ data Adapter = IDB | LevelDB | WebSQL | Http
 data StorageType = Persistent | Temporary
 data AndroidDBImplementation = SQLite4Java | NativeAPI
 
-data DefaultDBOptions = DefaultDBOptions {
-  "name" :: String
-}
+data PouchDBResponse a = PouchDBResponse a |
+          SimpleResponse {
+            "ok" :: Boolean
+          }
 
-data LocalDBOptions = LocalDBOptions {
-  "auto_compaction" :: Boolean,
-  "adapter"         :: Adapter,
-  "revs_limit"      :: Int
-}
-
-data RemoteDBOptions = RemoteDBOptions {
-  "ajax.cache"           :: Boolean,
-  "ajax.headers"         :: List String,
-  "auth.username"        :: String,
-  "auth.password"        :: String,
-  "ajax.withCredentials" :: Boolean
-}
-
-data IndexedDBOptions = IndexedDBOptions {
-  "storage" :: StorageType
-}
-
-data WebSQLOptions = WebSQLOptions {
-  "size" :: Int
-}
-
-data SQLiteOptions = SQLiteOptions {
-  "location"                      :: String,
-  "createFromLocation"            :: String,
-  "androidDatabaseImplementation" :: AndroidDBImplementation
-}
-
-data OtherDBOptions a = OtherDBOptions a
-
-data PouchDBOptions =
-            DefaultDBOptions
-          | LocalDBOptions
-          | RemoteDBOptions
-          | IndexedDBOptions
-          | WebSQLOptions
-          | OtherDBOptions
+data PouchDBOptions a =
+            DefaultDBOptions {
+              "name" :: String
+            }
+          | LocalDBOptions {
+              "auto_compaction" :: Boolean,
+              "adapter"         :: Adapter,
+              "revs_limit"      :: Int
+            }
+          | RemoteDBOptions {
+              "ajax.cache"           :: Boolean,
+              "ajax.headers"         :: List String,
+              "auth.username"        :: String,
+              "auth.password"        :: String,
+              "ajax.withCredentials" :: Boolean
+            }
+          | IndexedDBOptions {
+              "storage" :: StorageType
+            }
+          | WebSQLOptions {
+              "size" :: Int
+            }
+          | OtherDBOptions a
 
 data PouchDBInfo = PouchDBInfo {
   "db_name"    :: String,
@@ -81,6 +70,7 @@ data PouchDBInfo = PouchDBInfo {
 foreign import logRaw :: forall a e. a -> Eff (console :: CONSOLE | e) Unit
 
 -- | PouchDB API
-foreign import pouchDB :: forall e. Maybe String -> Maybe PouchDBOptions -> PouchDBEff PouchDB
-foreign import info    :: forall a e. (a -> Eff e Unit) -> PouchDB -> PouchDBEff Unit
+foreign import pouchDB :: forall a e. Maybe String -> Maybe (PouchDBOptions a) -> PouchDBEff PouchDB
+foreign import info    :: forall a e. Maybe (a -> Eff e Unit) -> PouchDB -> PouchDBEff Unit
+foreign import destroy :: forall a b c e. Maybe (PouchDBOptions a) -> Maybe (b -> Eff e Unit) -> PouchDB -> PouchDBEff (PouchDBResponse c)
 
