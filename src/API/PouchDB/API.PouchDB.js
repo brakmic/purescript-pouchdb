@@ -123,6 +123,21 @@ var _post = function(doc){
   };
 };
 
+var _get = function(docId){
+  return function(options){
+    var _options = extractOptions(options);
+    return function(callback){
+      var cb = createCallback('get', callback);
+      return function(db){
+        return function(){
+          cb(db.get(docId, _options))();
+          return {};
+        };
+      };
+    };
+  };
+};
+
 /* HELPERS */
 
 var logRaw = function(str) {
@@ -138,5 +153,6 @@ module.exports = {
   info    : _info,
   destroy : _destroy,
   put     : _put,
-  post    : _post
+  post    : _post,
+  get     : _get
 };

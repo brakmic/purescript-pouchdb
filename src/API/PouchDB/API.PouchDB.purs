@@ -15,7 +15,8 @@ module API.PouchDB
             info,
             destroy,
             put,
-            post
+            post,
+            get
           ) where
 
 import Prelude                       (Unit)
@@ -81,3 +82,4 @@ foreign import info    :: forall a e f. Maybe (a -> Eff e Unit) -> PouchDB -> Ef
 foreign import destroy :: forall a b c d. Maybe (PouchDBOptions a) -> Maybe (b -> Eff c Unit) -> PouchDB -> Eff (err :: EXCEPTION | d) Unit
 foreign import put     :: forall a b c d e. PouchDBDocument a -> Maybe String -> Maybe String -> Maybe (PouchDBOptions b) -> Maybe (c -> Eff d Unit) -> PouchDB -> Eff (err :: EXCEPTION | e) Unit
 foreign import post    :: forall a b c d e. PouchDBDocument a -> Maybe (PouchDBOptions b) -> Maybe (c -> Eff d Unit) -> PouchDB -> Eff (err :: EXCEPTION | e) Unit
+foreign import get     :: forall a b c e. String -> Maybe (PouchDBOptions a) -> Maybe (b -> Eff c Unit) -> PouchDB -> Eff (err :: EXCEPTION | e) Unit

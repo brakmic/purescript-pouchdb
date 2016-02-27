@@ -11,6 +11,7 @@ import API.PouchDB                 (PouchDBM
                                     , PouchDBDocument(PouchDBDocument)
                                     , post
                                     , put
+                                    , get
                                     , info
                                     , pouchDB
                                     , destroy
@@ -36,12 +37,18 @@ showDBPostInfo = \anyData -> do
                             logRaw anyData
                             log "New document created (via POST)!"
 
+showRetrievedDocument :: forall a e. a -> Eff(console :: CONSOLE | e) Unit
+showRetrievedDocument = \document -> do
+                                     logRaw document
+                                     log "Document retrieved."
+
 main :: forall e. Eff(console :: CONSOLE, pouchDBM :: PouchDBM, err :: EXCEPTION | e) Unit
 main = do
       let doc = PouchDBDocument { name : "Harris", occupation: "Procrastinator", city: "Troisdorf" }
       pdb <- pouchDB (Just "dummyDB") Nothing
       info (Just showDBCreateInfo) pdb
-      -- put doc (Just "myDummyId") Nothing Nothing (Just showDBPutInfo) pdb
-      post doc Nothing (Just showDBPostInfo) pdb
-      -- destroy Nothing (Just showDBDestroyInfo) pdb
+      put doc (Just "myDummyId") Nothing Nothing (Just showDBPutInfo) pdb
+      -- post doc Nothing (Just showDBPostInfo) pdb
+      get "myDummyId" Nothing (Just showRetrievedDocument) pdb
+      --destroy Nothing (Just showDBDestroyInfo) pdb
       return unit
