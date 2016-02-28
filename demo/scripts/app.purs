@@ -27,8 +27,8 @@ callback = \anyData -> do
 main :: forall e. Eff(console :: CONSOLE, pouchDBM :: PouchDBM, err :: EXCEPTION | e) Unit
 main = do
       let doc = PouchDBDocument {
-                                  "id" : "hbr123",
-                                  rev : "2-9AF304BE281790604D1D8A4B0F4C9ADB",
+                                  "_id" : Just "hbr123",
+                                  "_rev" : Just "2-9AF304BE281790604D1D8A4B0F4C9ADB",
                                   name : "Harris",
                                   occupation: "Procrastinator",
                                   city: "Troisdorf"
