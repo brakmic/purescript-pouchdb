@@ -15,8 +15,9 @@ With PouchDB one can store app-data locally *while offline* and sync them with t
 - <a href="http://pouchdb.com/api.html#create_document">Post document</a>
 - <a href="http://pouchdb.com/api.html#fetch_document">Fetch document</a>
 - <a href="http://pouchdb.com/api.html#delete_document">Delete document</a>
+- <a href=""http://pouchdb.com/api.html#batch_create>Batch upload</a>
 
-<img src="http://fs5.directupload.net/images/160228/7ucq82rk.png"/>
+<img src="http://fs5.directupload.net/images/160228/e5o7gse7.png"/>
 
 ### Building
 
