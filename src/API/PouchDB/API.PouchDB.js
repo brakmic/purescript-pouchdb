@@ -167,7 +167,7 @@ var _removeDocRev = function(doc){
       var cb = createCallback('removeDocRev', callback);
       return function(db){
         return function(){
-          cb(db.remove(_doc._id.value0, _doc._rev.value0, _options))();
+          cb(db.remove(_doc._id, _doc._rev, _options))();
           return {};
         };
       };
