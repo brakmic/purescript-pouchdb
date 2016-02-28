@@ -195,6 +195,19 @@ var _bulkDocs = function(docs){
   };
 };
 
+var _allDocs = function(options){
+  var _options = extractOptions(options);
+  return function(callback){
+    var cb = createCallback('allDocs', callback);
+    return function(db){
+      return function(){
+        cb(db.allDocs(_options))();
+        return {};
+      };
+    };
+  };
+};
+
 /* HELPERS */
 
 var logRaw = function(str) {
@@ -219,7 +232,7 @@ var extractDoc = function(doc){
   }
   //_doc._rev = (_doc._rev && _doc._rev.value0) ? _doc._rev.value0 : null;
   //_doc._id = (_doc._id && _doc._id.value0) ? _doc._id.value0 : null;
-  console.log('[EXTRACT-DOC] ' + JSON.stringify(_doc, null, 4));
+  //console.log('[EXTRACT-DOC] ' + JSON.stringify(_doc, null, 4));
   return _doc;
 };
 
@@ -240,5 +253,6 @@ module.exports = {
   get          : _get,
   remove       : _remove,
   removeDocRev : _removeDocRev,
-  bulkDocs     : _bulkDocs
+  bulkDocs     : _bulkDocs,
+  allDocs      : _allDocs
 };

@@ -1,25 +1,26 @@
 module API.PouchDB
           (
-            PouchDBM,
-            PouchDB,
-            PouchDBEff,
-            Adapter(..),
-            StorageType(..),
-            AndroidDBImplementation(..),
-            PouchDBOptions(..),
-            PouchDBInfo(..),
-            PouchDBResponse(..),
-            PouchDBDocument(..),
-            logRaw,
-            pouchDB,
-            info,
-            destroy,
-            put,
-            post,
-            get,
-            remove,
-            removeDocRev,
-            bulkDocs
+              PouchDBM
+            , PouchDB
+            , PouchDBEff
+            , Adapter(..)
+            , StorageType(..)
+            , AndroidDBImplementation(..)
+            , PouchDBOptions(..)
+            , PouchDBInfo(..)
+            , PouchDBResponse(..)
+            , PouchDBDocument(..)
+            , logRaw
+            , pouchDB
+            , info
+            , destroy
+            , put
+            , post
+            , get
+            , remove
+            , removeDocRev
+            , allDocs
+            , bulkDocs
           ) where
 
 import Prelude                       (Unit)
@@ -94,3 +95,4 @@ foreign import get          :: forall a b c e. String -> Maybe (PouchDBOptions a
 foreign import remove       :: forall a b c d e. PouchDBDocument a -> Maybe (PouchDBOptions b) -> Maybe (c -> Eff d Unit) -> PouchDB -> Eff (err :: EXCEPTION | e) Unit
 foreign import removeDocRev :: forall a b c d e. PouchDBDocument a -> Maybe (PouchDBOptions b) -> Maybe (c -> Eff d Unit) -> PouchDB -> Eff (err :: EXCEPTION | e) Unit
 foreign import bulkDocs     :: forall a b c d e. Array (PouchDBDocument a) -> Maybe (PouchDBOptions b) -> Maybe (c -> Eff d Unit) -> PouchDB -> Eff (err :: EXCEPTION | e) Unit
+foreign import allDocs      :: forall a b c e. Maybe (PouchDBOptions a) -> Maybe(b -> Eff c Unit) -> PouchDB -> Eff (err :: EXCEPTION | e) Unit

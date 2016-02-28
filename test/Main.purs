@@ -21,6 +21,7 @@ import API.PouchDB                 (PouchDBM
                                     , remove
                                     , removeDocRev
                                     , bulkDocs
+                                    , allDocs
                                     , logRaw)
 
 showDBCreateInfo :: forall a e. a -> Eff(console :: CONSOLE | e) Unit
@@ -57,6 +58,11 @@ showBulkInsertInfo :: forall a e. a -> Eff(console :: CONSOLE | e) Unit
 showBulkInsertInfo = \docs -> do
                               logRaw docs
                               log "Multiple documents inserted."
+
+showBatchFetchInfo :: forall a e. a -> Eff(console :: CONSOLE | e) Unit
+showBatchFetchInfo = \docs -> do
+                              logRaw docs
+                              log "Multiple documents retrieved."
 
 main :: forall e. Eff(err :: EXCEPTION | e) Unit
 main = do
@@ -150,9 +156,12 @@ main = do
       let coders = [ doc_a,  doc_b,  doc_c, doc_d ]
       bulkDocs coders Nothing (Just showBulkInsertInfo) pdb5
 
+      traceA "\r\n[TEST 9] fetching a batch of documents"
+      allDocs Nothing (Just showBatchFetchInfo) pdb5
+
       traceA "[CLEANUP] Removing databases"
       destroy Nothing (Just showDBDestroyInfo) pdb2
       destroy Nothing (Just showDBDestroyInfo) pdb3
       destroy Nothing (Just showDBDestroyInfo) pdb4
-      destroy Nothing (Just showDBDestroyInfo) pdb5
+      --destroy Nothing (Just showDBDestroyInfo) pdb5
 
