@@ -90,18 +90,19 @@ var _destroy = function(options){
 };
 
 var _put = function(doc){
-  var _doc = doc.value0 ? doc.value0 : doc;
+  //var _doc = extractDoc(doc);
   return function(docId){
-    var _docId = docId.value0 ? docId.value0 : null;
+    //var _docId = docId.value0 ? docId.value0 : null;
     return function(docRev){
-      var _docRev = docRev.value0 ? docRev.value0 : null;
+      //var _docRev = docRev.value0 ? docRev.value0 : null;
       return function(options){
         var _options = extractOptions(options);
         return function(callback){
           var cb = createCallback('put', callback);
           return function(db){
             return function(){
-              cb(db.put(doc.value0,_docId,_docRev,_options))();
+              var _doc = createDoc(doc,docId,docRev);
+              cb(db.put(_doc,null,null,_options))();
               return {};
             };
           };
@@ -112,7 +113,7 @@ var _put = function(doc){
 };
 
 var _post = function(doc){
-  var _doc = doc.value0 ? doc.value0 : doc;
+  var _doc = extractDoc(doc);
   return function(options){
     var _options = extractOptions(options);
     return function(callback){
@@ -143,7 +144,7 @@ var _get = function(docId){
 };
 
 var _remove = function(doc){
-  var _doc = doc.value0 ? doc.value0 : doc;
+  var _doc = extractDoc(doc);
   return function(options){
     var _options = extractOptions(options);
     return function(callback){
@@ -159,14 +160,14 @@ var _remove = function(doc){
 };
 
 var _removeDocRev = function(doc){
-  var _doc = doc.value0 ? doc.value0 : doc;
+  var _doc = extractDoc(doc);
   return function(options){
     var _options = extractOptions(options);
     return function(callback){
       var cb = createCallback('removeDocRev', callback);
       return function(db){
         return function(){
-          cb(db.remove(_doc._id, _doc._rev, _options))();
+          cb(db.remove(_doc._id.value0, _doc._rev.value0, _options))();
           return {};
         };
       };
@@ -181,6 +182,20 @@ var logRaw = function(str) {
     console.log(str);
     return {};
   };
+};
+
+var extractDoc = function(doc){
+  var _doc = doc.value0 ? doc.value0 : doc;
+  _doc._rev = (_doc._rev) && !_doc._rev.value0 ? _doc._rev.value0 : null;
+  _doc._id = (_doc._id) && !_doc._id.value0 ? _doc._id.value0 : null;
+  return _doc;
+};
+
+var createDoc = function(doc, id, rev){
+    doc = doc.value0 ? doc.value0 : doc;
+    doc._id = id.value0 ? id.value0 : null;
+    doc._rev = rev.value0 ? rev.value0 : null;
+    return doc;
 };
 
 module.exports = {

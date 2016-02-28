@@ -68,8 +68,8 @@ data PouchDBOptions a =
           | OtherDBOptions a
 
 data PouchDBDocument a = PouchDBDocument {
-                          "id"   :: String,
-                          "rev"  :: String
+                          "_id"   :: Maybe String,
+                          "_rev"  :: Maybe String
                           | a
                         }
 

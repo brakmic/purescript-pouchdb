@@ -8,8 +8,7 @@
   },
   "scripts": {
     "start": "babel-node ./demo/index.js",
-    "test": "pulp test",
-    "build": "gulp"
+    "test": "pulp test"
   },
   "keywords": [
     "pouchdb",
