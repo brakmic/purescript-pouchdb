@@ -2,6 +2,7 @@ module Test.Main where
 
 import Prelude                     (Unit, unit, return, bind)
 import Data.Maybe                  (Maybe(Just, Nothing))
+import Data.List                   (List, fromFoldable, toList)
 -- import Test.QuickCheck
 -- import Unsafe.Coerce               (unsafeCoerce)
 import Control.Monad.Eff           (Eff)
@@ -19,6 +20,7 @@ import API.PouchDB                 (PouchDBM
                                     , get
                                     , remove
                                     , removeDocRev
+                                    , bulkDocs
                                     , logRaw)
 
 showDBCreateInfo :: forall a e. a -> Eff(console :: CONSOLE | e) Unit
@@ -51,17 +53,22 @@ showDeletedDocument = \document -> do
                                      logRaw document
                                      log "Document retrieved."
 
+showBulkInsertInfo :: forall a e. a -> Eff(console :: CONSOLE | e) Unit
+showBulkInsertInfo = \docs -> do
+                              logRaw docs
+                              log "Multiple documents inserted."
+
 main :: forall e. Eff(err :: EXCEPTION | e) Unit
 main = do
-      traceA "\r\n[TEST 1] create new PouchDB"
+      traceA "\r\n[TEST 1] create PouchDB"
       pdb <- pouchDB (Just "dummyDB") Nothing
       traceA "\r\n[TEST 2] get info from PouchDB"
       info (Just showDBCreateInfo) pdb
 
-      traceA "\r\n[TEST 3] destroy PouchDB instance"
+      traceA "\r\n[TEST 3] destroy PouchDB"
       destroy Nothing (Just showDBDestroyInfo) pdb
 
-      traceA "\r\n[TEST 4] put Document into PouchDB"
+      traceA "\r\n[TEST 4] put document"
       let doc = PouchDBDocument {
                                   "_id" : Just "hbr12345",
                                   "_rev" : Nothing,
@@ -72,7 +79,7 @@ main = do
       pdb2 <- pouchDB (Just "dummyDB2") Nothing
       put doc (Just "myDummyId2") Nothing Nothing (Just showDBPutInfo) pdb2
 
-      traceA "\r\n[TEST 5] post Document into PouchDB"
+      traceA "\r\n[TEST 5] post document"
       let doc2 = PouchDBDocument {
                                   "_id" : Just "hbr56789",
                                   "_rev" : Nothing,
@@ -87,17 +94,17 @@ main = do
       put doc2 (Just "myDummyId3") Nothing Nothing (Just showDBPutInfo) pdb3
       get "myDummyId" Nothing (Just showRetrievedDocument) pdb3
 
-      traceA "\r\n[TEST] delete document from PouchDB"
+      traceA "\r\n[TEST 7] delete document"
       let doc4 = PouchDBDocument {
                                   "_id" : Just "hbr789",
-                                  "_rev" : Just "0000000000000003333333",
+                                  "_rev" : Just "1-84abc2a942007bee7cf55007cba56198",
                                   name : "John",
                                   occupation : "Coder",
                                   city : "New York"
                                 }
       let doc4x = PouchDBDocument {
                                   "_id" : Just "hbr789",
-                                  "_rev" : Just "0000000000000003333333",
+                                  "_rev" : Just "1-84abc2a942007bee7cf55007cba56122",
                                   name : "John",
                                   occupation : "Coder",
                                   city : "New York"
@@ -110,9 +117,42 @@ main = do
                                              return unit)) pdb4
       remove doc4 Nothing (Just showDeletedDocument) pdb4
 
+      traceA "\r\n[TEST 8] insert multiple docs"
+      pdb5 <- pouchDB (Just "coderDB") Nothing
+      let doc_a = PouchDBDocument {
+                                  "_id" : Just "hbr_a",
+                                  "_rev" : Nothing,
+                                  name : "Emma",
+                                  occupation : "Coder",
+                                  city : "Menlo Park"
+                                }
+      let doc_b = PouchDBDocument {
+                                  "_id" : Just "hbr_b",
+                                  "_rev" : Nothing,
+                                  name : "Max",
+                                  occupation : "Coder",
+                                  city : "New York"
+                                }
+      let doc_c = PouchDBDocument {
+                                  "_id" : Just "hbr_c",
+                                  "_rev" : Nothing,
+                                  name : "Julia",
+                                  occupation : "Coder",
+                                  city : "New York"
+                                }
+      let doc_d = PouchDBDocument {
+                                  "_id" : Just "hbr_d",
+                                  "_rev" : Nothing,
+                                  name : "Lara",
+                                  occupation : "Coder",
+                                  city : "New York"
+                                }
+      let coders = [ doc_a,  doc_b,  doc_c, doc_d ]
+      bulkDocs coders Nothing (Just showBulkInsertInfo) pdb5
 
       traceA "[CLEANUP] Removing databases"
       destroy Nothing (Just showDBDestroyInfo) pdb2
       destroy Nothing (Just showDBDestroyInfo) pdb3
       destroy Nothing (Just showDBDestroyInfo) pdb4
+      destroy Nothing (Just showDBDestroyInfo) pdb5
 

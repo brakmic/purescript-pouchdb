@@ -2,6 +2,7 @@
 // module API.PouchDB
 
 const _PouchDB = require('pouchdb');
+const _ = require('underscore');
 
 //This is a helper for creating internal callbacks to process responses.
 var createCallback = function(api, callback){
@@ -175,6 +176,25 @@ var _removeDocRev = function(doc){
   };
 };
 
+var _bulkDocs = function(docs){
+  var _docs = [];
+  _.each(docs, function(doc){
+    _docs.push(extractDoc(doc));
+  });
+  return function(options){
+    var _options = extractOptions(options);
+    return function(callback){
+      var cb = createCallback('bulkDocs', callback);
+      return function(db){
+        return function(){
+          cb(db.bulkDocs(_docs, _options))();
+          return {};
+        };
+      };
+    };
+  };
+};
+
 /* HELPERS */
 
 var logRaw = function(str) {
@@ -185,9 +205,21 @@ var logRaw = function(str) {
 };
 
 var extractDoc = function(doc){
+  if(!doc)return null;
   var _doc = doc.value0 ? doc.value0 : doc;
-  _doc._rev = (_doc._rev) && !_doc._rev.value0 ? _doc._rev.value0 : null;
-  _doc._id = (_doc._id) && !_doc._id.value0 ? _doc._id.value0 : null;
+  if(_doc._rev && _doc._rev.value0){
+    _doc._rev = _doc._rev.value0;
+  }else if(Object.keys(_doc._rev).length === 0){
+    delete _doc._rev;
+  }
+  if(_doc._id && _doc._id.value0){
+    _doc._id = _doc._id.value0;
+  }else if(Object.keys(_doc._id).length === 0){
+    delete _doc._id;
+  }
+  //_doc._rev = (_doc._rev && _doc._rev.value0) ? _doc._rev.value0 : null;
+  //_doc._id = (_doc._id && _doc._id.value0) ? _doc._id.value0 : null;
+  console.log('[EXTRACT-DOC] ' + JSON.stringify(_doc, null, 4));
   return _doc;
 };
 
@@ -207,5 +239,6 @@ module.exports = {
   post         : _post,
   get          : _get,
   remove       : _remove,
-  removeDocRev : _removeDocRev
+  removeDocRev : _removeDocRev,
+  bulkDocs     : _bulkDocs
 };

@@ -18,7 +18,8 @@ module API.PouchDB
             post,
             get,
             remove,
-            removeDocRev
+            removeDocRev,
+            bulkDocs
           ) where
 
 import Prelude                       (Unit)
@@ -92,3 +93,4 @@ foreign import post         :: forall a b c d e. PouchDBDocument a -> Maybe (Pou
 foreign import get          :: forall a b c e. String -> Maybe (PouchDBOptions a) -> Maybe (b -> Eff c Unit) -> PouchDB -> Eff (err :: EXCEPTION | e) Unit
 foreign import remove       :: forall a b c d e. PouchDBDocument a -> Maybe (PouchDBOptions b) -> Maybe (c -> Eff d Unit) -> PouchDB -> Eff (err :: EXCEPTION | e) Unit
 foreign import removeDocRev :: forall a b c d e. PouchDBDocument a -> Maybe (PouchDBOptions b) -> Maybe (c -> Eff d Unit) -> PouchDB -> Eff (err :: EXCEPTION | e) Unit
+foreign import bulkDocs     :: forall a b c d e. Array (PouchDBDocument a) -> Maybe (PouchDBOptions b) -> Maybe (c -> Eff d Unit) -> PouchDB -> Eff (err :: EXCEPTION | e) Unit
