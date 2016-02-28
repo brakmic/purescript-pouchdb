@@ -8,6 +8,7 @@ import Control.Monad.Eff.Console   (CONSOLE, log)
 -- import Control.Monad.Eff.Random  (RANDOM, random)
 import Control.Monad.Eff.Exception (EXCEPTION)
 import API.PouchDB                 (PouchDBM
+                                    , PouchDB
                                     , PouchDBDocument(PouchDBDocument)
                                     , post
                                     , put
@@ -15,40 +16,29 @@ import API.PouchDB                 (PouchDBM
                                     , info
                                     , pouchDB
                                     , destroy
+                                    , remove
+                                    , removeDocRev
                                     , logRaw)
 
-showDBCreateInfo :: forall a e. a -> Eff(console :: CONSOLE | e) Unit
-showDBCreateInfo = \anyData -> do
-                               logRaw anyData
-                               log "PouchDB database created!"
-
-showDBDestroyInfo :: forall a e. a -> Eff(console :: CONSOLE | e) Unit
-showDBDestroyInfo = \anyData -> do
-                                logRaw anyData
-                                log "PouchDB database deleted!"
-
-showDBPutInfo :: forall a e. a -> Eff(console :: CONSOLE | e) Unit
-showDBPutInfo = \anyData -> do
-                            logRaw anyData
-                            log "New document created (via PUT)!"
-
-showDBPostInfo :: forall a e. a -> Eff(console :: CONSOLE | e) Unit
-showDBPostInfo = \anyData -> do
-                            logRaw anyData
-                            log "New document created (via POST)!"
-
-showRetrievedDocument :: forall a e. a -> Eff(console :: CONSOLE | e) Unit
-showRetrievedDocument = \document -> do
-                                     logRaw document
-                                     log "Document retrieved."
+callback :: forall a e. a -> Eff(console :: CONSOLE| e) Unit
+callback = \anyData -> do
+                       logRaw anyData
 
 main :: forall e. Eff(console :: CONSOLE, pouchDBM :: PouchDBM, err :: EXCEPTION | e) Unit
 main = do
-      let doc = PouchDBDocument { name : "Harris", occupation: "Procrastinator", city: "Troisdorf" }
+      let doc = PouchDBDocument {
+                                  "id" : "hbr123",
+                                  rev : "2-9AF304BE281790604D1D8A4B0F4C9ADB",
+                                  name : "Harris",
+                                  occupation: "Procrastinator",
+                                  city: "Troisdorf"
+                                }
       pdb <- pouchDB (Just "dummyDB") Nothing
-      info (Just showDBCreateInfo) pdb
-      put doc (Just "myDummyId") Nothing Nothing (Just showDBPutInfo) pdb
-      -- post doc Nothing (Just showDBPostInfo) pdb
-      get "myDummyId" Nothing (Just showRetrievedDocument) pdb
-      --destroy Nothing (Just showDBDestroyInfo) pdb
+      info (Just callback) pdb
+      --put doc Nothing Nothing Nothing (Just callback) pdb
+      post doc Nothing (Just callback) pdb
+      --get doc."_id" Nothing (Just callback) pdb
+      --remove doc Nothing (Just callback) pdb
+      --removeDocRev doc Nothing (Just callback) pdb
+      --destroy Nothing (Just callback) pdb
       return unit

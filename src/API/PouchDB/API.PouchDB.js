@@ -29,7 +29,7 @@ var createCallback = function(api, callback){
           val.then(function(v){
             callback(v)();
           }).catch(function(err){
-            console.error(err);
+            console.error('[API ' + api + '] ' + err);
           });
           return {};
         }
@@ -51,9 +51,9 @@ var extractOptions = function(options){
 
 var _pouchDB = function(name){
   return function(options){
+    var _options = extractOptions(options);
     return function(){
       var _name = null;
-      var _options = extractOptions(options);
       if(name && name.value0){
         _name = name.value0;
       }else{
@@ -82,7 +82,7 @@ var _destroy = function(options){
   var cb = createCallback('destroy', callback);
     return function(db){
       return function(){
-        cb(db.destroy(options))();
+        cb(db.destroy(_options))();
         return {};
       };
     };
@@ -90,15 +90,18 @@ var _destroy = function(options){
 };
 
 var _put = function(doc){
+  var _doc = doc.value0 ? doc.value0 : doc;
   return function(docId){
+    var _docId = docId.value0 ? docId.value0 : null;
     return function(docRev){
+      var _docRev = docRev.value0 ? docRev.value0 : null;
       return function(options){
         var _options = extractOptions(options);
         return function(callback){
           var cb = createCallback('put', callback);
           return function(db){
             return function(){
-              cb(db.put(doc.value0,docId.value0,docRev.value0,_options))();
+              cb(db.put(doc.value0,_docId,_docRev,_options))();
               return {};
             };
           };
@@ -109,13 +112,14 @@ var _put = function(doc){
 };
 
 var _post = function(doc){
+  var _doc = doc.value0 ? doc.value0 : doc;
   return function(options){
     var _options = extractOptions(options);
     return function(callback){
       var cb = createCallback('post', callback);
       return function(db){
         return function(){
-          cb(db.post(doc.value0,_options))();
+          cb(db.post(_doc,_options))();
           return {};
         };
       };
@@ -138,6 +142,38 @@ var _get = function(docId){
   };
 };
 
+var _remove = function(doc){
+  var _doc = doc.value0 ? doc.value0 : doc;
+  return function(options){
+    var _options = extractOptions(options);
+    return function(callback){
+      var cb = createCallback('remove', callback);
+      return function(db){
+        return function(){
+          cb(db.remove(_doc,_options))();
+          return {};
+        };
+      };
+    };
+  };
+};
+
+var _removeDocRev = function(doc){
+  var _doc = doc.value0 ? doc.value0 : doc;
+  return function(options){
+    var _options = extractOptions(options);
+    return function(callback){
+      var cb = createCallback('removeDocRev', callback);
+      return function(db){
+        return function(){
+          cb(db.remove(_doc._id, _doc._rev, _options))();
+          return {};
+        };
+      };
+    };
+  };
+};
+
 /* HELPERS */
 
 var logRaw = function(str) {
@@ -148,11 +184,13 @@ var logRaw = function(str) {
 };
 
 module.exports = {
-  logRaw  : logRaw,
-  pouchDB : _pouchDB,
-  info    : _info,
-  destroy : _destroy,
-  put     : _put,
-  post    : _post,
-  get     : _get
+  logRaw       : logRaw,
+  pouchDB      : _pouchDB,
+  info         : _info,
+  destroy      : _destroy,
+  put          : _put,
+  post         : _post,
+  get          : _get,
+  remove       : _remove,
+  removeDocRev : _removeDocRev
 };
