@@ -25,7 +25,6 @@ module API.PouchDB
 
 import Prelude                       (Unit)
 import Data.Maybe                    (Maybe)
-import Data.List                     (List)
 import Control.Monad.Eff             (Eff)
 import Control.Monad.Eff.Console     (CONSOLE())
 import Control.Monad.Eff.Exception   (EXCEPTION)
@@ -56,7 +55,7 @@ data PouchDBOptions a =
             }
           | RemoteDBOptions {
               "ajax.cache"           :: Boolean,
-              "ajax.headers"         :: List String,
+              "ajax.headers"         :: Array String,
               "auth.username"        :: String,
               "auth.password"        :: String,
               "ajax.withCredentials" :: Boolean
