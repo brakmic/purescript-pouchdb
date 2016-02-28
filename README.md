@@ -22,7 +22,7 @@ With PouchDB one can store app-data locally *while offline* and sync them with t
 
 *Library*
 ```shell
-pulp dep install [initial build only]
+bower install [initial build only]
 npm install [initial build only]
 gulp
 ```
@@ -37,7 +37,7 @@ gulp build-demo
 *Tests*
 
 ```shell
-pulp test
+npm test
 ```
 
 ### Running
