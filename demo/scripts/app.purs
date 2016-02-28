@@ -18,6 +18,7 @@ import API.PouchDB                 (PouchDBM
                                     , destroy
                                     , remove
                                     , removeDocRev
+                                    , bulkDocs
                                     , logRaw)
 
 callback :: forall a e. a -> Eff(console :: CONSOLE| e) Unit
