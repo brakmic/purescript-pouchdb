@@ -7,9 +7,10 @@ import Control.Monad.Eff           (Eff)
 import Control.Monad.Eff.Console   (CONSOLE, log)
 -- import Control.Monad.Eff.Random  (RANDOM, random)
 import Control.Monad.Eff.Exception (EXCEPTION)
-import API.PouchDB                 (PouchDBM
+import API.PouchDB                 (  PouchDBM
                                     , PouchDB
-                                    , PouchDBDocument(PouchDBDocument)
+                                    , PouchDBDocument(..)
+                                    , PouchDBOptions(..)
                                     , post
                                     , put
                                     , get
@@ -28,12 +29,38 @@ main :: forall e. Eff(console :: CONSOLE, pouchDBM :: PouchDBM, err :: EXCEPTION
 main = do
       let doc = PouchDBDocument {
                                   "id" : "hbr123",
-                                  rev : "2-9AF304BE281790604D1D8A4B0F4C9ADB",
-                                  name : "Harris",
-                                  occupation: "Procrastinator",
-                                  city: "Troisdorf"
+                                  "rev" : "2-9AF304BE281790604D1D8A4B0F4C9ADB",
+                                  "name" : "Harris",
+                                  "occupation": "Procrastinator",
+                                  "city": "Troisdorf"
                                 }
-      pdb <- pouchDB (Just "dummyDB") Nothing
+      let options = PouchDBOptions {
+              "name"    : Just "myDummyDB",
+              "local"   : Just {
+                    "auto_compaction" : true,
+                    "adapter"         : Nothing,
+                    "revs_limit"      : 3
+              },
+              "remote"  : Just  {
+                      "ajax" :  Just
+                                {
+                                  "cache"           : true,
+                                  "headers"         : ["header1", "header2"],
+                                  "withCredentials" : false
+                                },
+                      "auth" : Just
+                                {
+                                  "username"        : "harris",
+                                  "password"        : "unbreakable_pwd"
+                                },
+                      "skip_setup" : Just false
+              },
+              "indexdb" : Nothing,
+              "websql"  : Nothing,
+              "sqlite"  : Nothing
+      }
+      -- pdb <- pouchDB (Just "dummyDB") Nothing
+      pdb <- pouchDB Nothing (Just options)
       info (Just callback) pdb
       --put doc Nothing Nothing Nothing (Just callback) pdb
       post doc Nothing (Just callback) pdb

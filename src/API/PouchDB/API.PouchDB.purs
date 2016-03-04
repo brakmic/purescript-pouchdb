@@ -1,29 +1,32 @@
 module API.PouchDB
           (
-            PouchDBM,
-            PouchDB,
-            PouchDBEff,
-            Adapter(..),
-            StorageType(..),
-            AndroidDBImplementation(..),
-            PouchDBOptions(..),
-            PouchDBInfo(..),
-            PouchDBResponse(..),
-            PouchDBDocument(..),
-            logRaw,
-            pouchDB,
-            info,
-            destroy,
-            put,
-            post,
-            get,
-            remove,
-            removeDocRev
+              PouchDBM
+            , PouchDB
+            , PouchDBEff
+            , AjaxOptions
+            , AuthOptions
+            , LocalDBOptions
+            , RemoteDBOptions
+            , PouchDBOptions(..)
+            , PouchDBInfo(..)
+            , PouchDBResponse(..)
+            , PouchDBDocument(..)
+            , IndexedDBOptions
+            , WebSQLOptions
+            , SQLiteOptions
+            , logRaw
+            , pouchDB
+            , info
+            , destroy
+            , put
+            , post
+            , get
+            , remove
+            , removeDocRev
           ) where
 
 import Prelude                       (Unit)
 import Data.Maybe                    (Maybe)
-import Data.List                     (List)
 import Control.Monad.Eff             (Eff)
 import Control.Monad.Eff.Console     (CONSOLE())
 import Control.Monad.Eff.Exception   (EXCEPTION)
@@ -34,44 +37,67 @@ foreign import data PouchDB  :: *
 
 type PouchDBEff a = forall e. Eff(pouchDBM :: PouchDBM | e) a
 
-data Adapter = IDB | LevelDB | WebSQL | Http
-data StorageType = Persistent | Temporary
-data AndroidDBImplementation = SQLite4Java | NativeAPI
-
 data PouchDBResponse a = PouchDBResponse a |
           SimpleResponse {
             "ok" :: Boolean
           }
 
-data PouchDBOptions a =
-            DefaultDBOptions {
-              "name" :: String
+type DefaultDBOptions = {
+  "name" :: String
+}
+type LocalDBOptions = {
+  "auto_compaction" :: Boolean,
+  "adapter"         :: Maybe String,
+  "revs_limit"      :: Int
+}
+
+type RemoteDBOptions a = {
+  "ajax"                 :: Maybe AjaxOptions,
+  "auth"                 :: Maybe AuthOptions,
+  "skip_setup"           :: Maybe Boolean
+  | a
+}
+
+type AjaxOptions = {
+  "withCredentials" :: Boolean,
+  "cache"           :: Boolean,
+  "headers"         :: Array String
+}
+
+type AuthOptions = {
+  "username" :: String,
+  "password" :: String
+}
+
+type IndexedDBOptions = {
+  "storage" :: String
+}
+type WebSQLOptions = {
+  "size" :: Int
+}
+
+type SQLiteOptions = {
+  "location"                     :: String,
+  "createFromLocation"           :: Boolean,
+  "adroidDatabaseImplementation" :: Int
+}
+
+data OtherDBOptions a = OtherDBOptions a
+
+data PouchDBOptions a = PouchDBOptions {
+              "name"    :: Maybe String,
+              "local"   :: Maybe LocalDBOptions,
+              "remote"  :: Maybe (RemoteDBOptions a),
+              "indexdb" :: Maybe IndexedDBOptions,
+              "websql"  :: Maybe WebSQLOptions,
+              "sqlite"  :: Maybe SQLiteOptions
             }
-          | LocalDBOptions {
-              "auto_compaction" :: Boolean,
-              "adapter"         :: Adapter,
-              "revs_limit"      :: Int
-            }
-          | RemoteDBOptions {
-              "ajax.cache"           :: Boolean,
-              "ajax.headers"         :: List String,
-              "auth.username"        :: String,
-              "auth.password"        :: String,
-              "ajax.withCredentials" :: Boolean
-            }
-          | IndexedDBOptions {
-              "storage" :: StorageType
-            }
-          | WebSQLOptions {
-              "size" :: Int
-            }
-          | OtherDBOptions a
 
 data PouchDBDocument a = PouchDBDocument {
-                          "id"   :: String,
-                          "rev"  :: String
-                          | a
-                        }
+                "id"   :: String,
+                "rev"  :: String
+                | a
+            }
 
 
 data PouchDBInfo = PouchDBInfo {
@@ -84,11 +110,11 @@ data PouchDBInfo = PouchDBInfo {
 foreign import logRaw :: forall a e. a -> Eff (console :: CONSOLE | e) Unit
 
 -- | PouchDB API
-foreign import pouchDB      :: forall a e. Maybe String -> Maybe (PouchDBOptions a) -> Eff (err :: EXCEPTION | e) PouchDB
-foreign import info         :: forall a e f. Maybe (a -> Eff e Unit) -> PouchDB -> Eff (err :: EXCEPTION | f) Unit
-foreign import destroy      :: forall a b c e. Maybe (PouchDBOptions a) -> Maybe (b -> Eff c Unit) -> PouchDB -> Eff (err :: EXCEPTION | e) Unit
+foreign import pouchDB      :: forall a e.     Maybe String -> Maybe (PouchDBOptions a) -> Eff (err :: EXCEPTION | e) PouchDB
+foreign import info         :: forall a b c.   Maybe (a -> Eff b Unit) -> PouchDB -> Eff (err :: EXCEPTION | c) Unit
+foreign import destroy      :: forall a b c d.   Maybe (PouchDBOptions a) -> Maybe (b -> Eff c Unit) -> PouchDB -> Eff (err :: EXCEPTION | d) Unit
 foreign import put          :: forall a b c d e. PouchDBDocument a -> Maybe String -> Maybe String -> Maybe (PouchDBOptions b) -> Maybe (c -> Eff d Unit) -> PouchDB -> Eff (err :: EXCEPTION | e) Unit
 foreign import post         :: forall a b c d e. PouchDBDocument a -> Maybe (PouchDBOptions b) -> Maybe (c -> Eff d Unit) -> PouchDB -> Eff (err :: EXCEPTION | e) Unit
-foreign import get          :: forall a b c e. String -> Maybe (PouchDBOptions a) -> Maybe (b -> Eff c Unit) -> PouchDB -> Eff (err :: EXCEPTION | e) Unit
+foreign import get          :: forall a b c d.   String -> Maybe (PouchDBOptions a) -> Maybe (b -> Eff c Unit) -> PouchDB -> Eff (err :: EXCEPTION | d) Unit
 foreign import remove       :: forall a b c d e. PouchDBDocument a -> Maybe (PouchDBOptions b) -> Maybe (c -> Eff d Unit) -> PouchDB -> Eff (err :: EXCEPTION | e) Unit
 foreign import removeDocRev :: forall a b c d e. PouchDBDocument a -> Maybe (PouchDBOptions b) -> Maybe (c -> Eff d Unit) -> PouchDB -> Eff (err :: EXCEPTION | e) Unit

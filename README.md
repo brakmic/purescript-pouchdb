@@ -37,7 +37,7 @@ gulp build-demo
 *Tests*
 
 ```shell
-pulp test
+npm test
 ```
 
 ### Running

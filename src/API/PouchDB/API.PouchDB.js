@@ -39,14 +39,46 @@ var createCallback = function(api, callback){
 };
 
 var extractOptions = function(options){
-  var _options = null;
-  if(!options || (options.constructor &&
-    options.constructor.name == 'Nothing')){
-    _options = {};
-  }else{
-    _options = options.value0;
+  var op = {
+      "name" : null,
+      "adapter": null,
+      "auto_compaction": null,
+      "revs_limit": null,
+      "skip_setup": null,
+      "storage": null,
+      "size": null,
+      "location": null,
+      "createFromLocation": null,
+      "androidDatabaseImplementation": null,
+      "db": null,
+      "ajax": {},
+      "auth": {}
+
+  };
+  var _l = null;
+  var _r = null;
+  var _o = null;
+  if(options || (options.constructor &&
+    options.constructor.name != 'Nothing')){
+    if(!hasPackedValues(options))return {}; //defect options object received!
+    //OK options BEGIN
+    _o = options.value0.value0;
+    //must be present or at least as a first param in _pouchDB()!
+    op.name = _o.name.value0 ? _o.name.value0 : null;
+    _l = hasPackedValues(_o.local.value0) ? _o.local.value0.value0 : null;
+    if(_l){
+        op.adapter         = _l.adapter.value0; //if undefined pochDB will infer it
+        op.auto_compaction = _l.auto_compaction;
+        op.revs_limit      = _l.revs_limit;
+    }
+    _r = hasPackedValues(_o.remote) ? _o.remote.value0 : null;
+    if(_r){
+      op.ajax =  hasPackedValues(_r.ajax) ? _r.ajax.value0 : null;
+      op.auth = hasPackedValues(_r.auth) ? _r.auth.value0 : null;
+    }
+    //OK options END
   }
-  return _options;
+  return op;
 }
 
 var _pouchDB = function(name){
@@ -173,6 +205,11 @@ var _removeDocRev = function(doc){
     };
   };
 };
+
+var hasPackedValues = function(obj){
+  return (obj &&
+          obj.value0);
+}
 
 /* HELPERS */
 

@@ -8,7 +8,7 @@
   },
   "scripts": {
     "start": "babel-node ./demo/index.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "pulp test"
   },
   "keywords": [
     "pouchdb",
