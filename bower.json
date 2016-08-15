@@ -1,6 +1,6 @@
 {
   "name": "purescript-pouchdb",
-  "version": "1.0.0",
+  "version": "0.1.1",
   "moduleType": [
     "node"
   ],
@@ -10,6 +10,10 @@
     "bower_components",
     "output"
   ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/brakmic/purescript-pouchdb.git"
+  },
   "dependencies": {
     "purescript-console": "^1.0.0",
     "purescript-maybe": "^1.0.0",
