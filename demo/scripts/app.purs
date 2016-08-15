@@ -1,6 +1,6 @@
 module DemoApp.PouchDB where
 
-import Prelude                     (Unit, unit, return, bind)
+import Prelude                     (Unit, unit, pure, bind)
 import Data.Maybe                  (Maybe(Nothing, Just))
 -- import Data.Either
 import Control.Monad.Eff           (Eff)
@@ -68,4 +68,4 @@ main = do
       --remove doc Nothing (Just callback) pdb
       --removeDocRev doc Nothing (Just callback) pdb
       --destroy Nothing (Just callback) pdb
-      return unit
+      pure unit

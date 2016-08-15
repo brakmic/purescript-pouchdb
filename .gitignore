@@ -6,3 +6,5 @@
 /.psci*
 /src/.webpack.js
 dummyDB4
+.psc-ide-port
+.vscode/

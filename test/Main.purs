@@ -1,17 +1,12 @@
 module Test.Main where
 
-import Prelude                     (Unit, unit, return, bind)
+import Prelude                     (Unit, unit, pure, bind)
 import Data.Maybe                  (Maybe(Just, Nothing))
-import Data.List                   (List, fromFoldable, toList)
--- import Test.QuickCheck
--- import Unsafe.Coerce               (unsafeCoerce)
 import Control.Monad.Eff           (Eff)
 import Control.Monad.Eff.Exception (EXCEPTION)
 import Control.Monad.Eff.Console   (CONSOLE, log)
--- import Control.Monad.Eff.Random    (RANDOM)
 import Debug.Trace (traceA)
-import API.PouchDB                 (PouchDBM
-                                    , PouchDBDocument(PouchDBDocument)
+import API.PouchDB                 (PouchDBDocument(PouchDBDocument)
                                     , post
                                     , put
                                     , info
@@ -20,8 +15,6 @@ import API.PouchDB                 (PouchDBM
                                     , get
                                     , remove
                                     , removeDocRev
-                                    , bulkDocs
-                                    , allDocs
                                     , logRaw)
 
 showDBCreateInfo :: forall a e. a -> Eff(console :: CONSOLE | e) Unit
@@ -76,8 +69,8 @@ main = do
 
       traceA "\r\n[TEST 4] put document"
       let doc = PouchDBDocument {
-                                  "_id" : Just "hbr12345",
-                                  "_rev" : Nothing,
+                                  "id" : "hbr12345",
+                                  "rev" : "",
                                   name : "Harris",
                                   occupation: "Procrastinator",
                                   city: "Troisdorf"
@@ -87,8 +80,8 @@ main = do
 
       traceA "\r\n[TEST 5] post document"
       let doc2 = PouchDBDocument {
-                                  "_id" : Just "hbr56789",
-                                  "_rev" : Nothing,
+                                  "id" : "hbr56789",
+                                  "rev" : "",
                                   name : "John",
                                   occupation : "Coder",
                                   city : "New York"
@@ -102,15 +95,15 @@ main = do
 
       traceA "\r\n[TEST 7] delete document"
       let doc4 = PouchDBDocument {
-                                  "_id" : Just "hbr789",
-                                  "_rev" : Just "1-84abc2a942007bee7cf55007cba56198",
+                                  "id" : "hbr789",
+                                  "rev" : "1-84abc2a942007bee7cf55007cba56198",
                                   name : "John",
                                   occupation : "Coder",
                                   city : "New York"
                                 }
       let doc4x = PouchDBDocument {
-                                  "_id" : Just "hbr789",
-                                  "_rev" : Just "1-84abc2a942007bee7cf55007cba56122",
+                                  "id" : "hbr789",
+                                  "rev" : "1-84abc2a942007bee7cf55007cba56122",
                                   name : "John",
                                   occupation : "Coder",
                                   city : "New York"
@@ -120,44 +113,39 @@ main = do
       put doc4x (Just "myDummy4x") Nothing Nothing (Just showDBPutInfo) pdb3
       get "myDummy4x" Nothing (Just (\mydoc -> do
                                              removeDocRev mydoc Nothing Nothing pdb4
-                                             return unit)) pdb4
+                                             pure unit)) pdb4
       remove doc4 Nothing (Just showDeletedDocument) pdb4
 
       traceA "\r\n[TEST 8] insert multiple docs"
       pdb5 <- pouchDB (Just "coderDB") Nothing
       let doc_a = PouchDBDocument {
-                                  "_id" : Just "hbr_a",
-                                  "_rev" : Nothing,
+                                  "id" : "hbr_a",
+                                  "rev" : "",
                                   name : "Emma",
                                   occupation : "Coder",
                                   city : "Menlo Park"
                                 }
       let doc_b = PouchDBDocument {
-                                  "_id" : Just "hbr_b",
-                                  "_rev" : Nothing,
+                                  "id" : "hbr_b",
+                                  "rev" : "",
                                   name : "Max",
                                   occupation : "Coder",
                                   city : "New York"
                                 }
       let doc_c = PouchDBDocument {
-                                  "_id" : Just "hbr_c",
-                                  "_rev" : Nothing,
+                                  "id" : "hbr_c",
+                                  "rev" : "",
                                   name : "Julia",
                                   occupation : "Coder",
                                   city : "New York"
                                 }
       let doc_d = PouchDBDocument {
-                                  "_id" : Just "hbr_d",
-                                  "_rev" : Nothing,
+                                  "id" : "hbr_d",
+                                  "rev" : "",
                                   name : "Lara",
                                   occupation : "Coder",
                                   city : "New York"
                                 }
-      let coders = [ doc_a,  doc_b,  doc_c, doc_d ]
-      bulkDocs coders Nothing (Just showBulkInsertInfo) pdb5
-
-      traceA "\r\n[TEST 9] fetching a batch of documents"
-      allDocs Nothing (Just showBatchFetchInfo) pdb5
 
       traceA "[CLEANUP] Removing databases"
       destroy Nothing (Just showDBDestroyInfo) pdb2
