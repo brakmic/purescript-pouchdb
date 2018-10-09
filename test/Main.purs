@@ -1,6 +1,6 @@
 module Test.Main where
 
-import Prelude                     (Unit, unit, pure, bind)
+import Prelude                     (Unit, unit, pure, bind, discard)
 import Data.Maybe                  (Maybe(Just, Nothing))
 import Control.Monad.Eff           (Eff)
 import Control.Monad.Eff.Exception (EXCEPTION)
