@@ -25,17 +25,17 @@ module API.PouchDB
             , removeDocRev
           ) where
 
-import Prelude                       (Unit)
-import Data.Maybe                    (Maybe)
-import Control.Monad.Eff             (Eff)
-import Control.Monad.Eff.Console     (CONSOLE())
-import Control.Monad.Eff.Exception   (EXCEPTION)
+import Control.Monad.Eff (Eff, kind Effect)
+import Control.Monad.Eff.Console (CONSOLE)
+import Control.Monad.Eff.Exception (EXCEPTION)
+import Data.Maybe (Maybe)
+import Prelude (Unit)
 
 -- | PouchDB Effects & Types
-foreign import data PouchDBM :: !
-foreign import data PouchDB  :: *
+foreign import data PouchDBM :: Effect 
+foreign import data PouchDB  :: Type
 
-type PouchDBEff a = forall e. Eff(pouchDBM :: PouchDBM | e) a
+type PouchDBEff a = Eff (pouchdbm :: PouchDBM) a
 
 data PouchDBResponse a = PouchDBResponse a |
           SimpleResponse {
